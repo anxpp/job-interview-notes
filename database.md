@@ -134,7 +134,7 @@ select ... for update;
 
 #### ReadView 读视图
 
-    读视图维护未提交的事务列表（TRX_IDs）以及最大最小值（TRX_ID_MAX，TRX_ID_MIN）
+    读视图维护未提交的事务列表（TRX_IDs）以及该列表最大最小值（TRX_ID_MAX，TRX_ID_MIN）
 
 进行select操作时，选取快照的方式：
 
@@ -151,13 +151,13 @@ select ... for update;
     间隙锁锁的是索引，而且是按索引的间隙加锁
     间隙锁解决幻读
 
-如果索引是1，4，7，8
+如果索引是1，4，7，9
 
 ```sql
 select ... WHERE id between 5 and 8 for update;
 ```
 
-上面的sql会锁住的间隙：(4,7],(7,8]，其他事务就不能插入6
+上面的sql会锁住的间隙：(4,7),(7,9)，其他事务就不能插入6
 
 ## MySQL
 
