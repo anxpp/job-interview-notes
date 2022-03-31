@@ -123,16 +123,27 @@ func HybridWritePointerSimple(slot *unsafe.Pointer, ptr unsafe.Pointer) {
 - 动态类型逃逸
 - 栈空间满逃逸
 
+## CSP模型
+
+    go语言座右铭：“使用通信来共享内存，而不是通过共享内存来通信”
+    CSP时1978年一篇论文提出的技术，即通信顺序进程
+    不过当时作者认为CSP不适合作为编程语言实现
+    然而CSP在Go中是非常重要的组成部分（非CSP完全实现），提供了元语支持
+
+传统多线程的做法：通过锁限制堆临界区资源的访问
+
+CSP：基于通道
+
 ## 协程调度
 
 ### GPM模型
 
 ### 调度策略
 
-## CSP模型
-
 ### chan
 
 ## context
 
 ## map 与 sync.map
+
+## 调优
