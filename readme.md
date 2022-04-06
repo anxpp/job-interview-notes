@@ -6,7 +6,11 @@
 
 ## 数据库
 
+[go](database.md)
+
 ## Redis
+
+[go](redis.md)
 
 ## 消息队列
 

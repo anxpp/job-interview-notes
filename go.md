@@ -1,5 +1,9 @@
 # Go
 
+- [数据库](database.md)
+- [redis](redis.md)
+- [go语言基础](go.md)
+
 ## 内存模型
 
     Go中虽然也分堆和栈，但是实际使用没什么区别。

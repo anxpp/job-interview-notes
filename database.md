@@ -1,5 +1,9 @@
 # database
 
+- [数据库](database.md)
+- [redis](redis.md)
+- [go语言基础](go.md)
+
 ## 数据库理论
 
 ### 事务
