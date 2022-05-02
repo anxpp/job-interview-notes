@@ -6,11 +6,11 @@
 
 ## 数据库
 
-[go](database.md)
+[数据库 & mysql](database.md)
 
 ## Redis
 
-[go](redis.md)
+[redis](redis.md)
 
 ## 消息队列
 
@@ -27,7 +27,7 @@
 ## 高性能方案
 
     集群
-
+ 
 ## Go语言基础
 
-[go](go.md)
+[go语言基础](go.md)
