@@ -120,7 +120,796 @@ group by department_id;
 
 ## leetcode 相关热门题目
 
-#### 511.游戏玩法分析 I
+#### 176. 第二高的薪水[中等]
+
+```
+Employee 表：
++-------------+------+
+| Column Name | Type |
++-------------+------+
+| id          | int  |
+| salary      | int  |
++-------------+------+
+id 是这个表的主键。
+表的每一行包含员工的工资信息。
+
+编写一个 SQL 查询，获取并返回 Employee 表中第二高的薪水 。如果不存在第二高的薪水，查询应该返回 null 。
+
+查询结果如下例所示。
+
+示例 1：
+
+输入：
+Employee 表：
++----+--------+
+| id | salary |
++----+--------+
+| 1  | 100    |
+| 2  | 200    |
+| 3  | 300    |
++----+--------+
+输出：
++---------------------+
+| SecondHighestSalary |
++---------------------+
+| 200                 |
++---------------------+
+示例 2：
+
+输入：
+Employee 表：
++----+--------+
+| id | salary |
++----+--------+
+| 1  | 100    |
++----+--------+
+输出：
++---------------------+
+| SecondHighestSalary |
++---------------------+
+| null                |
++---------------------+
+```
+
+常规解法：
+
+```
+select (
+    select distinct salary from Employee order by salary desc limit 1 offset 1
+) as SecondHighestSalary
+```
+
+窗口函数：
+```
+select(
+    select distinct salary from
+    (
+        select salary,dense_rank() over(order by salary desc) as rk from Employee
+    ) t where rk = 2
+) SecondHighestSalary
+```
+
+#### 180. 连续出现的数字[中等]
+
+```
+表：Logs
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| num         | varchar |
++-------------+---------+
+id 是这个表的主键。
+
+编写一个 SQL 查询，查找所有至少连续出现三次的数字。
+
+返回的结果表中的数据可以按 任意顺序 排列。
+
+查询结果格式如下面的例子所示：
+
+示例 1:
+
+输入：
+Logs 表：
++----+-----+
+| Id | Num |
++----+-----+
+| 1  | 1   |
+| 2  | 1   |
+| 3  | 1   |
+| 4  | 2   |
+| 5  | 1   |
+| 6  | 2   |
+| 7  | 2   |
++----+-----+
+输出：
+Result 表：
++-----------------+
+| ConsecutiveNums |
++-----------------+
+| 1               |
++-----------------+
+解释：1 是唯一连续出现至少三次的数字。
+```
+
+常规解法：
+```
+SELECT DISTINCT Num AS ConsecutiveNums FROM Logs 
+WHERE (Id+1, Num) IN (SELECT * FROM Logs)
+AND (Id+2, Num) IN (SELECT * FROM Logs)
+```
+
+窗口函数：
+
+```
+select distinct t.num ConsecutiveNums from(
+    select num,
+        lead(num,1) over() l1,
+        lead(num,2) over() l2
+    from logs
+) t where t.num = t.l1 and t.num=t.l2
+```
+
+#### 178. 分数排名[中等]
+
+```
+表: Scores
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| score       | decimal |
++-------------+---------+
+Id是该表的主键。
+该表的每一行都包含了一场比赛的分数。Score是一个有两位小数点的浮点值。
+
+编写 SQL 查询对分数进行排序。排名按以下规则计算:
+
+分数应按从高到低排列。
+如果两个分数相等，那么两个分数的排名应该相同。
+在排名相同的分数后，排名数应该是下一个连续的整数。换句话说，排名之间不应该有空缺的数字。
+按 score 降序返回结果表。
+
+查询结果格式如下所示。
+
+示例 1:
+
+输入: 
+Scores 表:
++----+-------+
+| id | score |
++----+-------+
+| 1  | 3.50  |
+| 2  | 3.65  |
+| 3  | 4.00  |
+| 4  | 3.85  |
+| 5  | 4.00  |
+| 6  | 3.65  |
++----+-------+
+输出: 
++-------+------+
+| score | rank |
++-------+------+
+| 4.00  | 1    |
+| 4.00  | 1    |
+| 3.85  | 2    |
+| 3.65  | 3    |
+| 3.65  | 3    |
+| 3.50  | 4    |
++-------+------+
+```
+
+常规解法：
+```
+select s.score,a.rank from scores s left join (
+select score,cast(@rownum:=@rownum+1 as unsigned) as 'rank' from
+(select distinct score from scores order by score desc) t,(SELECT @rownum:=0) a
+) a on s.score=a.score order by s.score desc
+```
+
+窗口函数：
+
+```
+select score, dense_rank() over(order by score desc) `rank`
+from scores;
+```
+
+#### 185. 部门工资前三高的所有员工[困难]
+
+```
+表: Employee
+
++--------------+---------+
+| Column Name  | Type    |
++--------------+---------+
+| id           | int     |
+| name         | varchar |
+| salary       | int     |
+| departmentId | int     |
++--------------+---------+
+Id是该表的主键列。
+departmentId是Department表中ID的外键。
+该表的每一行都表示员工的ID、姓名和工资。它还包含了他们部门的ID。
+
+表: Department
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| name        | varchar |
++-------------+---------+
+Id是该表的主键列。
+该表的每一行表示部门ID和部门名。
+
+公司的主管们感兴趣的是公司每个部门中谁赚的钱最多。一个部门的 高收入者 是指一个员工的工资在该部门的 不同 工资中 排名前三 。
+
+编写一个SQL查询，找出每个部门中 收入高的员工 。
+
+以 任意顺序 返回结果表。
+
+查询结果格式如下所示。
+
+示例 1:
+
+输入: 
+Employee 表:
++----+-------+--------+--------------+
+| id | name  | salary | departmentId |
++----+-------+--------+--------------+
+| 1  | Joe   | 85000  | 1            |
+| 2  | Henry | 80000  | 2            |
+| 3  | Sam   | 60000  | 2            |
+| 4  | Max   | 90000  | 1            |
+| 5  | Janet | 69000  | 1            |
+| 6  | Randy | 85000  | 1            |
+| 7  | Will  | 70000  | 1            |
++----+-------+--------+--------------+
+Department  表:
++----+-------+
+| id | name  |
++----+-------+
+| 1  | IT    |
+| 2  | Sales |
++----+-------+
+输出: 
++------------+----------+--------+
+| Department | Employee | Salary |
++------------+----------+--------+
+| IT         | Max      | 90000  |
+| IT         | Joe      | 85000  |
+| IT         | Randy    | 85000  |
+| IT         | Will     | 70000  |
+| Sales      | Henry    | 80000  |
+| Sales      | Sam      | 60000  |
++------------+----------+--------+
+解释:
+在IT部门:
+- Max的工资最高
+- 兰迪和乔都赚取第二高的独特的薪水
+- 威尔的薪水是第三高的
+
+在销售部:
+- 亨利的工资最高
+- 山姆的薪水第二高
+- 没有第三高的工资，因为只有两名员工
+```
+
+常规解法：
+```
+select d.name Department,e.name Employee, e.Salary
+from Employee e left join Department d on e.departmentId = d.id
+where e.id in
+(
+    select t1.id
+    from Employee t1 left join Employee t2
+    on t1.departmentId = t2.departmentId and t1.salary<t2.salary
+    group by t1.id
+    having count(distinct t2.salary) <= 2
+)
+```
+
+窗口函数：
+
+```
+select t2.name Department,t1.name Employee,salary from 
+(
+    select departmentId,name,salary,dense_rank() over(partition by departmentId order by salary desc) rk
+    from employee
+) t1 join department t2 on t1.departmentId = t2.id and t1.rk<=3
+```
+
+#### 197. 上升的温度[简单]
+
+```
+表： Weather
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| id            | int     |
+| recordDate    | date    |
+| temperature   | int     |
++---------------+---------+
+id 是这个表的主键
+该表包含特定日期的温度信息
+
+编写一个 SQL 查询，来查找与之前（昨天的）日期相比温度更高的所有日期的 id 。
+
+返回结果 不要求顺序 。
+
+查询结果格式如下例。
+
+示例 1：
+
+输入：
+Weather 表：
++----+------------+-------------+
+| id | recordDate | Temperature |
++----+------------+-------------+
+| 1  | 2015-01-01 | 10          |
+| 2  | 2015-01-02 | 25          |
+| 3  | 2015-01-03 | 20          |
+| 4  | 2015-01-04 | 30          |
++----+------------+-------------+
+输出：
++----+
+| id |
++----+
+| 2  |
+| 4  |
++----+
+解释：
+2015-01-02 的温度比前一天高（10 -> 25）
+2015-01-04 的温度比前一天高（20 -> 30）
+```
+
+常规解法：
+```
+select t1.id 
+from Weather t1 join Weather t2 on dateDiff(t1.recordDate,t2.recordDate)=1 and t1.temperature>t2.temperature
+```
+
+窗口函数：
+
+```
+select id from
+(
+    select id,
+        temperature nowT,lag(temperature,1) over(order by recordDate) preT,
+        recordDate nowD,lag(recordDate,1) over(order by recordDate) preD
+    from Weather
+) t where t.preT<t.nowT and dateDiff(t.nowD,t.preD)=1;
+```
+
+#### 177. 第N高的薪水[中等]
+
+```
+表: Employee
+
++-------------+------+
+| Column Name | Type |
++-------------+------+
+| id          | int  |
+| salary      | int  |
++-------------+------+
+Id是该表的主键列。
+该表的每一行都包含有关员工工资的信息。
+
+编写一个SQL查询来报告 Employee 表中第 n 高的工资。如果没有第 n 个最高工资，查询应该报告为 null 。
+
+查询结果格式如下所示。
+
+示例 1:
+
+输入: 
+Employee table:
++----+--------+
+| id | salary |
++----+--------+
+| 1  | 100    |
+| 2  | 200    |
+| 3  | 300    |
++----+--------+
+n = 2
+输出: 
++------------------------+
+| getNthHighestSalary(2) |
++------------------------+
+| 200                    |
++------------------------+
+示例 2:
+
+输入: 
+Employee 表:
++----+--------+
+| id | salary |
++----+--------+
+| 1  | 100    |
++----+--------+
+n = 2
+输出: 
++------------------------+
+| getNthHighestSalary(2) |
++------------------------+
+| null                   |
++------------------------+
+```
+
+常规解法：
+```
+CREATE FUNCTION getNthHighestSalary(N INT) RETURNS INT
+BEGIN
+  SET N = N-1;
+  RETURN (
+      # Write your MySQL query statement below.
+      SELECT DISTINCT salary FROM employee ORDER BY salary DESC LIMIT N, 1
+  );
+END
+```
+
+窗口函数：
+
+```
+CREATE FUNCTION getNthHighestSalary(N INT) RETURNS INT
+BEGIN
+  RETURN (
+      # Write your MySQL query statement below.
+        select distinct salary from
+        (
+            select salary, dense_rank() over(order by salary desc) rk
+            from Employee
+        ) t where rk=N
+  );
+END
+```
+
+#### 184. 部门工资最高的员工[中等]
+
+```
+表： Employee
+
++--------------+---------+
+| 列名          | 类型    |
++--------------+---------+
+| id           | int     |
+| name         | varchar |
+| salary       | int     |
+| departmentId | int     |
++--------------+---------+
+id是此表的主键列。
+departmentId是Department表中ID的外键。
+此表的每一行都表示员工的ID、姓名和工资。它还包含他们所在部门的ID。
+
+表： Department
+
++-------------+---------+
+| 列名         | 类型    |
++-------------+---------+
+| id          | int     |
+| name        | varchar |
++-------------+---------+
+id是此表的主键列。
+此表的每一行都表示一个部门的ID及其名称。
+
+编写SQL查询以查找每个部门中薪资最高的员工。
+按 任意顺序 返回结果表。
+查询结果格式如下例所示。
+
+示例 1:
+
+输入：
+Employee 表:
++----+-------+--------+--------------+
+| id | name  | salary | departmentId |
++----+-------+--------+--------------+
+| 1  | Joe   | 70000  | 1            |
+| 2  | Jim   | 90000  | 1            |
+| 3  | Henry | 80000  | 2            |
+| 4  | Sam   | 60000  | 2            |
+| 5  | Max   | 90000  | 1            |
++----+-------+--------+--------------+
+Department 表:
++----+-------+
+| id | name  |
++----+-------+
+| 1  | IT    |
+| 2  | Sales |
++----+-------+
+输出：
++------------+----------+--------+
+| Department | Employee | Salary |
++------------+----------+--------+
+| IT         | Jim      | 90000  |
+| Sales      | Henry    | 80000  |
+| IT         | Max      | 90000  |
++------------+----------+--------+
+解释：Max 和 Jim 在 IT 部门的工资都是最高的，Henry 在销售部的工资最高。
+```
+
+常规解法：
+```
+SELECT
+    Department.name AS 'Department',
+    Employee.name AS 'Employee',
+    Salary
+FROM
+    Employee
+        JOIN
+    Department ON Employee.DepartmentId = Department.Id
+WHERE
+    (Employee.DepartmentId , Salary) IN
+    (   SELECT
+            DepartmentId, MAX(Salary)
+        FROM
+            Employee
+        GROUP BY DepartmentId
+	);
+```
+
+窗口函数：
+
+```
+select t2.name Department,t1.name Employee, t1.Salary
+from
+(
+    select name,departmentId,salary,rank() over(partition by departmentId order by salary desc) rk 
+    from employee
+) t1 join Department t2 on t1.departmentId = t2.id and t1.rk = 1
+```
+
+#### 196. 删除重复的电子邮箱[简单]
+
+```
+表: Person
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| email       | varchar |
++-------------+---------+
+id是该表的主键列。
+该表的每一行包含一封电子邮件。电子邮件将不包含大写字母。
+ 
+
+编写一个 SQL 删除语句来 删除 所有重复的电子邮件，只保留一个id最小的唯一电子邮件。
+
+以 任意顺序 返回结果表。 （注意： 仅需要写删除语句，将自动对剩余结果进行查询）
+
+查询结果格式如下所示。
+
+ 
+
+ 
+
+示例 1:
+
+输入: 
+Person 表:
++----+------------------+
+| id | email            |
++----+------------------+
+| 1  | john@example.com |
+| 2  | bob@example.com  |
+| 3  | john@example.com |
++----+------------------+
+输出: 
++----+------------------+
+| id | email            |
++----+------------------+
+| 1  | john@example.com |
+| 2  | bob@example.com  |
++----+------------------+
+解释: john@example.com重复两次。我们保留最小的Id = 1。
+```
+
+常规解法：
+```
+DELETE from Person 
+Where Id not in (
+    Select Id 
+    From(
+    Select MIN(Id) as id
+    From Person 
+    Group by Email
+   ) t
+)
+```
+
+窗口函数：
+
+```
+delete t1 from Person t1 join 
+(
+    select id,row_number() over(partition by email order by id) rn from Person
+) t2 on t1.id = t2.id
+where t2.rn>1
+```
+
+#### 601. 体育馆的人流量[困难]
+
+```
+表：Stadium
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| id            | int     |
+| visit_date    | date    |
+| people        | int     |
++---------------+---------+
+visit_date 是表的主键
+每日人流量信息被记录在这三列信息中：序号 (id)、日期 (visit_date)、 人流量 (people)
+每天只有一行记录，日期随着 id 的增加而增加
+
+编写一个 SQL 查询以找出每行的人数大于或等于 100 且 id 连续的三行或更多行记录。
+
+返回按 visit_date 升序排列 的结果表。
+
+查询结果格式如下所示。
+
+示例 1:
+
+输入：
+Stadium 表:
++------+------------+-----------+
+| id   | visit_date | people    |
++------+------------+-----------+
+| 1    | 2017-01-01 | 10        |
+| 2    | 2017-01-02 | 109       |
+| 3    | 2017-01-03 | 150       |
+| 4    | 2017-01-04 | 99        |
+| 5    | 2017-01-05 | 145       |
+| 6    | 2017-01-06 | 1455      |
+| 7    | 2017-01-07 | 199       |
+| 8    | 2017-01-09 | 188       |
++------+------------+-----------+
+输出：
++------+------------+-----------+
+| id   | visit_date | people    |
++------+------------+-----------+
+| 5    | 2017-01-05 | 145       |
+| 6    | 2017-01-06 | 1455      |
+| 7    | 2017-01-07 | 199       |
+| 8    | 2017-01-09 | 188       |
++------+------------+-----------+
+解释：
+id 为 5、6、7、8 的四行 id 连续，并且每行都有 >= 100 的人数记录。
+请注意，即使第 7 行和第 8 行的 visit_date 不是连续的，输出也应当包含第 8 行，因为我们只需要考虑 id 连续的记录。
+不输出 id 为 2 和 3 的行，因为至少需要三条 id 连续的记录。
+```
+
+常规解法：
+```
+select distinct a.* from stadium a,stadium b,stadium c
+where a.people>=100 and b.people>=100 and c.people>=100
+and (
+     (a.id = b.id-1 and b.id = c.id -1) or
+     (a.id = b.id-1 and a.id = c.id +1) or
+     (a.id = b.id+1 and b.id = c.id +1)
+) order by a.id
+```
+
+窗口函数：
+
+```
+select id,visit_date,people
+from(
+    select id,visit_date,people,
+        lag(people,1) over(order by id) pre1,
+        lag(people,2) over(order by id) pre2,
+        lead(people,1) over(order by id) next1,
+        lead(people,2) over(order by id) next2
+    from stadium
+) t
+where people>=100 and (
+    next1>=100 and next2>=100
+    or
+    pre1>=100 and pre2>=100
+    or
+    pre1>=100 and next1>=100
+)
+order by id
+```
+
+#### 182. 查找重复的电子邮箱[简单]
+
+```
+编写一个 SQL 查询，查找 Person 表中所有重复的电子邮箱。
+
+示例：
+
++----+---------+
+| Id | Email   |
++----+---------+
+| 1  | a@b.com |
+| 2  | c@d.com |
+| 3  | a@b.com |
++----+---------+
+根据以上输入，你的查询应返回以下结果：
+
++---------+
+| Email   |
++---------+
+| a@b.com |
++---------+
+说明：所有电子邮箱都是小写字母。
+```
+
+常规解法：
+```
+select email from person group by email having count(1)>1
+```
+
+窗口函数：
+
+```
+select distinct email from(
+    select email, count(1) over(partition by email) cnt from person
+) t where t.cnt>1
+```
+
+#### 596. 超过5名学生的课[简单]
+
+```
+表: Courses
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| student     | varchar |
+| class       | varchar |
++-------------+---------+
+(student, class)是该表的主键列。
+该表的每一行表示学生的名字和他们注册的班级。
+
+编写一个SQL查询来报告 至少有5个学生 的所有类。
+
+以 任意顺序 返回结果表。
+
+查询结果格式如下所示。
+
+示例 1:
+
+输入: 
+Courses table:
++---------+----------+
+| student | class    |
++---------+----------+
+| A       | Math     |
+| B       | English  |
+| C       | Math     |
+| D       | Biology  |
+| E       | Math     |
+| F       | Computer |
+| G       | Math     |
+| H       | Math     |
+| I       | Math     |
++---------+----------+
+输出: 
++---------+ 
+| class   | 
++---------+ 
+| Math    | 
++---------+
+```
+
+常规解法：
+```
+select class from courses group by class having count(1)>=5;
+```
+
+窗口函数：
+
+```
+select distinct class from(
+    select class,count(1) over(partition by class) cnt from courses
+) t where cnt>=5;
+```
+
+#### 511.游戏玩法分析 I[简单]
 
 活动表Activity：
 
@@ -171,7 +960,7 @@ select player_id,min(event_date) as first_login from Activity group by player_id
 select distinct player_id, min(event_date) over(partition by player_id) as first_login from Activity;
 ```
 
-#### 512.游戏玩法分析 II
+#### 512.游戏玩法分析 II[简单]
 
 ```
 Table: Activity
@@ -234,7 +1023,7 @@ from
 where rk=1
 ```
 
-#### 534. 游戏玩法分析 III
+#### 534. 游戏玩法分析 III[中等]
 
 ```
 Table: Activity
