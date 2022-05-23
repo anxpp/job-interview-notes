@@ -2,9 +2,10 @@ package main
 
 import (
 	"encoding/json"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	"net/http"
 )
 
 var logger *zap.Logger

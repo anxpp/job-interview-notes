@@ -1,0 +1,384 @@
+syntax = "proto3";
+package pb;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "msxf.com/icloud/msxf-cloud/pkg/cloudapi/services/cluster/pb";
+
+message PProvisioner {
+    uint32 Deleted = 1;
+    google.protobuf.Timestamp CreatedAt = 2;
+    google.protobuf.Timestamp UpdatedAt = 3;
+    string CreatedBy = 4;
+    string UpdatedBy = 5;
+    uint32 Id = 6;
+    string Name = 7;
+    string Desc = 8;
+    string ProvisionerName = 9;
+    string ProvisionerType = 10;
+    uint32 CapAlgorithm = 11;
+}
+
+message PTenant {
+    uint32 Deleted = 1;
+    google.protobuf.Timestamp CreatedAt = 2;
+    google.protobuf.Timestamp UpdatedAt = 3;
+    string CreatedBy = 4;
+    string UpdatedBy = 5;
+    uint32 Id = 6;
+    string Code = 7;
+    string Name = 8;
+    uint32 OverrunLimit = 9;
+    string IngressClass = 10;
+    string Company = 11;
+}
+
+message PStorageClass {
+    uint32 Deleted = 1;
+    google.protobuf.Timestamp CreatedAt = 2;
+    google.protobuf.Timestamp UpdatedAt = 3;
+    string CreatedBy = 4;
+    string UpdatedBy = 5;
+    uint32 Id = 6;
+    string ClassName = 7;
+    string Desc = 8;
+    uint32 Resize = 9;
+    uint32 RecycleType = 10;
+    string Provisioner = 11;
+    uint32 ProvisionerId = 12;
+    uint32 ClusterId = 13;
+    uint32 PhysicalClusterId = 14;
+}
+
+message PCluster {
+    uint32 Deleted = 1;
+    google.protobuf.Timestamp CreatedAt = 2;
+    google.protobuf.Timestamp UpdatedAt = 3;
+    string CreatedBy = 4;
+    string UpdatedBy = 5;
+    uint32 Id = 6;
+    string Name = 7;
+    string NameCh = 8;
+    string ZoneCode = 9;
+    string ZoneName = 10;
+    string PoolCode = 11;
+    string PoolName = 12;
+    uint32 Type = 13;
+    uint32 Category = 14;
+    uint32 Sort = 15;
+    string Label = 16;
+    string IPCidr = 17;
+    string VipCidr = 18;
+    string HarborUrl = 19;
+    string TillerUrl = 20;
+    string CicdUrl = 21;
+    string CloudUrl = 22;
+    string CloudRedirectUrl = 23;
+    uint32 OverrunLimit = 24;
+    uint32 OveruseLimit = 25;
+    string DnsDomain = 26;
+    string SearchDomain = 27;
+    string SearchOption = 28;
+    string Nameservers = 29;
+    string IdcNo = 30;
+    string NodeLabel = 31;
+    string EtcdApiVersion = 32;
+    string Scheduler = 33;
+    uint32 FixipOn = 34;
+    uint32 SubnetId = 35;
+}
+
+message PMwCluster {
+    uint32 Deleted = 1;
+    google.protobuf.Timestamp CreatedAt = 2;
+    google.protobuf.Timestamp UpdatedAt = 3;
+    string CreatedBy = 4;
+    string UpdatedBy = 5;
+    uint32 Id = 6;
+    string MwClusterName = 7;
+    string MwClusterType = 8;
+    string MwVersion = 9;
+    uint32 TenantId = 10;
+    uint32 ClusterId = 11;
+    uint32 ClusterType = 12;
+    uint32 EnvID = 13;
+    string Namespace = 14;
+    string ParamUrl = 15;
+    string Configs = 16;
+    string NotifyUrl = 17;
+    uint32 Status = 18;
+}
+
+message PMwContainer {
+    uint32 Deleted = 1;
+    google.protobuf.Timestamp CreatedAt = 2;
+    google.protobuf.Timestamp UpdatedAt = 3;
+    string CreatedBy = 4;
+    string UpdatedBy = 5;
+    uint32 Id = 6;
+    string InstanceName = 7;
+    string ComponentName = 8;
+    string ComponentType = 9;
+    string MwClusterName = 10;
+    string MwClusterType = 11;
+    uint32 ClusterId = 12;
+    uint32 TenantId = 13;
+    uint32 EnvID = 14;
+    uint32 InstanceId = 15;
+    string Name = 16;
+    string ImageUrl = 17;
+    uint32 ContainerCPU = 18;
+    uint32 ContainerMemory = 19;
+    uint32 ContainerGPU = 20;
+}
+
+message PMwVolume {
+    uint32 Deleted = 1;
+    google.protobuf.Timestamp CreatedAt = 2;
+    google.protobuf.Timestamp UpdatedAt = 3;
+    string CreatedBy = 4;
+    string UpdatedBy = 5;
+    uint32 Id = 6;
+    string ComponentName = 7;
+    string ComponentType = 8;
+    string MwClusterName = 9;
+    string MwClusterType = 10;
+    uint32 ClusterId = 11;
+    uint32 TenantId = 12;
+    uint32 EnvID = 13;
+    string VolumeType = 14;
+    string VolumeName = 15;
+    string HostPath = 16;
+    string VolumePath = 17;
+    string FileContent = 18;
+    string AccessModes = 19;
+    string StorageClassName = 20;
+    uint32 Quantity = 21;
+    uint32 IsReadOnly = 22;
+    uint32 Quota = 23;
+}
+
+message PClusterPhysical {
+    uint32 Deleted = 1;
+    google.protobuf.Timestamp CreatedAt = 2;
+    google.protobuf.Timestamp UpdatedAt = 3;
+    string CreatedBy = 4;
+    string UpdatedBy = 5;
+    uint32 Id = 6;
+    string Name = 7;
+    string Code = 8;
+    string KubeConfig = 9;
+    uint32 Type = 10;
+    string Search = 11;
+    string Category = 12;
+    string Nameservers = 13;
+    string PodSubnet = 14;
+    string VipSubnet = 15;
+    string NodeSubnet = 16;
+    string LoopbackVip = 17;
+    string Calicoetcd = 18;
+    string Clusteretcd = 19;
+    string Storageuri = 20;
+    string Netowrktype = 21;
+    string K8sapiaddr = 22;
+    string K8sLocalDnsIp = 23;
+    string K8sInstallVersion = 24;
+    string Kubeadmtoken = 25;
+    string K8sL4LoadServers = 26;
+    string SysopsAppName = 27;
+    string SysopsToken = 28;
+    string SysopsAddr = 29;
+}
+
+message PService {
+    uint32 Deleted = 1;
+    google.protobuf.Timestamp CreatedAt = 2;
+    google.protobuf.Timestamp UpdatedAt = 3;
+    string CreatedBy = 4;
+    string UpdatedBy = 5;
+    uint32 Id = 6;
+    uint32 ClusterId = 7;
+    string ClusterName = 8;
+    uint32 ClusterType = 9;
+    uint32 TenantId = 10;
+    uint32 EnvID = 11;
+    string Namespace = 12;
+    string ServiceName = 13;
+    string ServiceVersion = 14;
+    uint32 ServiceType = 15;
+    string DeployType = 16;
+    uint32 DeployProcedure = 17;
+    string Phase = 18;
+    string DcuCode = 19;
+    string AppType = 20;
+    string DcudeleteFrom = 21;
+    string DcudeleteTo = 22;
+    uint32 RunningType = 23;
+    string LastCiID = 24;
+    uint32 LastDeployId = 25;
+    uint32 Replicas = 26;
+    uint32 FixIp = 27;
+    string DeployDefine = 28;
+    uint32 State = 29;
+    string StateReason = 30;
+    string ResourceVersion = 31;
+    uint32 AppSetDeployId = 32;
+    uint32 WarningStatus = 33;
+    google.protobuf.Timestamp WarningBeginDate = 34;
+    google.protobuf.Timestamp WarningNotifyDate = 35;
+    google.protobuf.Timestamp LeaseEndDate = 36;
+}
+
+message PServiceContainer {
+    uint32 Deleted = 1;
+    google.protobuf.Timestamp CreatedAt = 2;
+    google.protobuf.Timestamp UpdatedAt = 3;
+    string CreatedBy = 4;
+    string UpdatedBy = 5;
+    uint32 ID = 6;
+    uint32 ClusterID = 7;
+    uint32 TenantID = 8;
+    uint32 EnvID = 9;
+    uint32 ServiceID = 10;
+    string Name = 11;
+    string LastCommitID = 12;
+    string ImageURL = 13;
+    string ContainerCmd = 14;
+    string ContainerArgs = 15;
+    uint32 ContainerCPU = 16;
+    uint32 ContainerMemory = 17;
+    uint32 ContainerGPU = 18;
+    string Lifecycle = 19;
+}
+
+message PPersistVolumeConf {
+    repeated string AccessMode = 1;
+    string StorageClassName = 2;
+    string Quantity = 3;
+}
+
+message PServiceVolume {
+    uint32 Deleted = 1;
+    google.protobuf.Timestamp CreatedAt = 2;
+    google.protobuf.Timestamp UpdatedAt = 3;
+    string CreatedBy = 4;
+    string UpdatedBy = 5;
+    uint32 ID = 6;
+    uint32 ClusterID = 7;
+    uint32 TenantID = 8;
+    uint32 EnvID = 9;
+    uint32 ServiceID = 10;
+    uint32 ContainerID = 11;
+    string VolumeType = 12;
+    string VolumeName = 13;
+    string HostPath = 14;
+    string VolumePath = 15;
+    string FileContent = 16;
+    PPersistVolumeConf PersistColumnConf = 17;
+    uint32 IsReadOnly = 18;
+}
+
+message PTidbCluster {
+    uint32 Deleted = 1;
+    google.protobuf.Timestamp CreatedAt = 2;
+    google.protobuf.Timestamp UpdatedAt = 3;
+    string CreatedBy = 4;
+    string UpdatedBy = 5;
+    uint32 ID = 6;
+    uint32 TenantID = 7;
+    uint32 ClusterID = 8;
+    uint32 PhysicalClusterID = 9;
+    uint32 EnvID = 10;
+    string ClusterName = 11;
+}
+
+message PTidbPods {
+    uint32 Deleted = 1;
+    google.protobuf.Timestamp CreatedAt = 2;
+    google.protobuf.Timestamp UpdatedAt = 3;
+    string CreatedBy = 4;
+    string UpdatedBy = 5;
+    uint32 ID = 6;
+    string Name = 7;
+    uint32 ClusterID = 8;
+    uint32 PhysicalClusterID = 9;
+    uint32 TidbClusterID = 10;
+    string TidbAppName = 11;
+    string HostIp = 12;
+    string PodIp = 13;
+    uint32 Cpu = 14;
+    uint32 Memory = 15;
+    uint32 LocalPv = 16;
+    uint32 EnvID = 17;
+    uint32 TenantID = 18;
+    string Status = 19;
+}
+
+message PClusterMap {
+    uint32 Deleted = 1;
+    google.protobuf.Timestamp CreatedAt = 2;
+    google.protobuf.Timestamp UpdatedAt = 3;
+    string CreatedBy = 4;
+    string UpdatedBy = 5;
+    uint32 Id = 6;
+    uint32 ClusterID = 7;
+    uint32 PhysicalID = 8;
+}
+
+message PHostMsg {
+    google.protobuf.Timestamp CreatedAt = 2;
+    google.protobuf.Timestamp UpdatedAt = 3;
+    string CreatedBy = 4;
+    string UpdatedBy = 5;
+    uint32 ID = 6;
+    uint32 PhysicalClusterId = 7;
+    uint32 LogicClusterId = 8;
+    uint32 Ip = 9;
+    string HostName = 10;
+    uint32 HostCpu = 11;
+    string HostMem = 12;
+    string HostDisk = 13;
+    string HostNetworkCard = 14;
+    uint32 HostType = 15;
+    uint32 HostGroup = 16;
+    uint32 HostRunStatus = 17;
+    string HostTenant = 18;
+    string HostRole = 19;
+    uint32 CpuCapacity = 20;
+    uint32 CpuAllocatable = 21;
+    uint32 MemCapacity = 22;
+    uint32 MemAllocatable = 23;
+    uint32 GpuCapacity = 24;
+    uint32 GpuAllocatable = 25;
+    uint32 GpuSize = 26;
+    uint32 CalicoAsnumber = 27;
+    string CalicoCidr = 28;
+    string CalicoPeerip = 29;
+    string CalicoIdcNetwork = 30;
+    uint32 CalicoBlocksize = 31;
+    map<string, string> K8sLabels = 32;
+    string DockerNetwork = 33;
+    string SoftwareList = 34;
+    string SecurityBaseline = 35;
+}
+
+// protoc --go_out=. cost_meta_check_data.proto
+message PCostMetaCheckData {
+    repeated PProvisioner ProvisionerList = 1;
+    repeated PTenant TenantList = 2;
+    repeated PStorageClass StorageClassList = 3;
+    repeated PClusterMap ClusterMapList = 4;
+    PCluster ClusterLogic = 5;
+    repeated PMwCluster MiddlewareClusterList = 6;
+    repeated PMwContainer MiddlewareContainerList = 7;
+    repeated PMwVolume MiddlewareVolumeList = 8;
+    PClusterPhysical ClusterPhysical = 9;
+    repeated PService ServiceList = 10;
+    repeated PServiceContainer ServiceContainerList = 11;
+    repeated PServiceVolume ServiceVolumeList = 12;
+    repeated PTidbCluster TiDBClusterList = 13;
+    repeated PTidbPods TiDBPodList = 14;
+    repeated PHostMsg HostMsgList = 15;
+    repeated uint32 PhysicalHostIps = 16;
+    repeated uint32 LogicHostIps = 17;
+}
