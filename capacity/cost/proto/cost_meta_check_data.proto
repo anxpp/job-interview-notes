@@ -3,7 +3,7 @@ package pb;
 
 import "google/protobuf/timestamp.proto";
 
-option go_package = "msxf.com/icloud/msxf-cloud/pkg/cloudapi/services/cluster/pb";
+option go_package = "";
 
 message PProvisioner {
     uint32 Deleted = 1;
