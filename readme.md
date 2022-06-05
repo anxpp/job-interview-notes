@@ -1,5 +1,7 @@
 # notes
 
+
+
 ## 操作系统
 
 ## 计算机网络
@@ -31,3 +33,11 @@
 ## Go语言基础
 
 [go语言基础](go.md)
+
+## K8s
+
+### Operator
+
+#### controller基础实现
+
+#### harbor operator
