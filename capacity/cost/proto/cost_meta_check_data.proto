@@ -3,7 +3,7 @@ package pb;
 
 import "google/protobuf/timestamp.proto";
 
-option go_package = "pb";
+option go_package = "msxf.com/icloud/msxf-cloud/pkg/cloudapi/services/cluster/pb";
 
 message PProvisioner {
     uint32 Deleted = 1;
@@ -86,6 +86,7 @@ message PCluster {
     string Scheduler = 33;
     uint32 FixipOn = 34;
     uint32 SubnetId = 35;
+    repeated uint32 NodeIps = 36;
 }
 
 message PMwCluster {
@@ -368,17 +369,23 @@ message PCostMetaCheckData {
     repeated PTenant TenantList = 2;
     repeated PStorageClass StorageClassList = 3;
     repeated PClusterMap ClusterMapList = 4;
-    PCluster ClusterLogic = 5;
-    repeated PMwCluster MiddlewareClusterList = 6;
-    repeated PMwContainer MiddlewareContainerList = 7;
-    repeated PMwVolume MiddlewareVolumeList = 8;
-    PClusterPhysical ClusterPhysical = 9;
-    repeated PService ServiceList = 10;
-    repeated PServiceContainer ServiceContainerList = 11;
-    repeated PServiceVolume ServiceVolumeList = 12;
-    repeated PTidbCluster TiDBClusterList = 13;
-    repeated PTidbPods TiDBPodList = 14;
-    repeated PHostMsg HostMsgList = 15;
-    repeated uint32 PhysicalHostIps = 16;
-    repeated uint32 LogicHostIps = 17;
+
+    PClusterPhysical ClusterPhysical = 5;
+    repeated PHostMsg HostMsgList = 6;
+
+    repeated PCluster ClusterLogic = 7;
+
+    repeated PMwCluster MiddlewareClusterList = 8;
+    repeated PMwContainer MiddlewareContainerList = 9;
+    repeated PMwVolume MiddlewareVolumeList = 10;
+
+    repeated PService ServiceList = 11;
+    repeated PServiceContainer ServiceContainerList = 12;
+    repeated PServiceVolume ServiceVolumeList = 13;
+
+    PClusterPhysical ClusterPhysicalTiDB = 14;
+    repeated PHostMsg HostMsgListTiDB = 15;
+
+    repeated PTidbCluster TiDBClusterList = 16;
+    repeated PTidbPods TiDBPodList = 17;
 }

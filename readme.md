@@ -6,6 +6,12 @@
 
 ## 计算机网络
 
+## 系统设计
+
+![系统设计](./sysdesign/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1.jpg)
+
+## 存储
+
 ## 数据库
 
 [数据库 & mysql](database.md)
