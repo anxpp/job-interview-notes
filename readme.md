@@ -38,7 +38,7 @@
  
 ## Go语言基础
 
-[go语言基础](go.md)
+[go语言基础](./go/readme.md)
 
 ## K8s
 
