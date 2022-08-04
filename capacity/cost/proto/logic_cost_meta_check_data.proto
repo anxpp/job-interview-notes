@@ -1,0 +1,188 @@
+syntax = "proto3";
+package pb;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "msxf.com/icloud/msxf-cloud/pkg/cloudapi/services/cluster/pb";
+
+message LProvisioner {
+    google.protobuf.Timestamp UpdatedAt = 1;
+    uint32 Id = 2;
+    string Name = 3;
+    string ProvisionerName = 4;
+    string ProvisionerType = 5;
+    uint32 CapAlgorithm = 6;
+}
+
+message LTenant {
+    google.protobuf.Timestamp UpdatedAt = 1;
+    uint32 Id = 2;
+    string Name = 3;
+}
+
+message LStorageClass {
+    google.protobuf.Timestamp UpdatedAt = 1;
+    uint32 Id = 2;
+    string ClassName = 3;
+    string Provisioner = 4;
+    uint32 ProvisionerId = 5;
+    uint32 PhysicalClusterId = 6;
+}
+
+message LCluster {
+    google.protobuf.Timestamp UpdatedAt = 1;
+    uint32 Id = 2;
+    string Name = 3;
+    string NameCh = 4;
+    repeated uint32 NodeIps = 5;
+}
+
+message LMwCluster {
+    google.protobuf.Timestamp UpdatedAt = 1;
+    uint32 Id = 2;
+    string MwClusterName = 3;
+    string MwClusterType = 4;
+    uint32 TenantId = 5;
+    uint32 ClusterId = 6;
+}
+
+message LMwContainer {
+    google.protobuf.Timestamp UpdatedAt = 1;
+    uint32 Id = 2;
+    string InstanceName = 3;
+    string ComponentName = 4;
+    string MwClusterName = 5;
+    uint32 ClusterId = 6;
+    uint32 TenantId = 7;
+    string Name = 8;
+    uint32 ContainerCPU = 9;
+    uint32 ContainerMemory = 10;
+    uint32 ContainerGPU = 11;
+}
+
+message LMwVolume {
+    google.protobuf.Timestamp UpdatedAt = 1;
+    uint32 Id = 2;
+    string ComponentName = 3;
+    string MwClusterName = 4;
+    uint32 ClusterId = 5;
+    uint32 TenantId = 6;
+    string VolumeType = 7;
+    string VolumeName = 8;
+    string StorageClassName = 9;
+    uint32 Quantity = 10;
+    uint32 Quota = 11;
+}
+
+message LClusterPhysical {
+    google.protobuf.Timestamp UpdatedAt = 1;
+    uint32 Id = 2;
+    string Name = 3;
+    string Code = 4;
+    uint32 Type = 5;
+    string Category = 6;
+}
+
+message LService {
+    google.protobuf.Timestamp UpdatedAt = 1;
+    uint32 Id = 2;
+    uint32 ClusterId = 3;
+    uint32 TenantId = 4;
+    string ServiceName = 5;
+    uint32 Replicas = 6;
+}
+
+message LServiceContainer {
+    google.protobuf.Timestamp UpdatedAt = 1;
+    uint32 Id = 2;
+    uint32 ClusterID = 3;
+    uint32 TenantID = 4;
+    uint32 ServiceID = 5;
+    string Name = 6;
+    uint32 ContainerCPU = 7;
+    uint32 ContainerMemory = 8;
+    uint32 ContainerGPU = 9;
+}
+
+message LPersistVolumeConf {
+    repeated string AccessMode = 1;
+    string StorageClassName = 2;
+    string Quantity = 3;
+}
+
+message LServiceVolume {
+    google.protobuf.Timestamp UpdatedAt = 1;
+    uint32 Id = 2;
+    uint32 ServiceID = 3;
+    uint32 TenantID = 4;
+    uint32 ClusterID = 5;
+    string VolumeType = 6;
+    LPersistVolumeConf PersistColumnConf = 7;
+}
+
+message LTidbCluster {
+    google.protobuf.Timestamp UpdatedAt = 1;
+    uint32 Id = 2;
+    uint32 TenantID = 3;
+    uint32 PhysicalClusterID = 4;
+    string ClusterName = 5;
+}
+
+message LTidbPods {
+    google.protobuf.Timestamp UpdatedAt = 1;
+    uint32 Id = 2;
+    string Name = 3;
+    uint32 PhysicalClusterID = 4;
+    uint32 TidbClusterID = 5;
+    uint32 Cpu = 6;
+    uint32 Memory = 7;
+    uint32 LocalPv = 8;
+    uint32 TenantID = 9;
+}
+
+message LClusterMap {
+    google.protobuf.Timestamp UpdatedAt = 1;
+    uint32 Id = 2;
+    uint32 ClusterID = 3;
+    uint32 PhysicalID = 4;
+}
+
+message LHostMsg {
+    google.protobuf.Timestamp UpdatedAt = 1;
+    uint32 Id = 2;
+    uint32 PhysicalClusterId = 3;
+    repeated uint32 LogicClusterIds = 4;
+    uint32 Ip = 5;
+    string HostDisk = 6;
+    uint32 CpuCapacity = 7;
+    uint32 MemCapacity = 8;
+    uint32 GpuCapacity = 9;
+    uint32 GpuSize = 10;
+}
+
+// protoc --go_out=. cost_meta_check_data.proto
+message LCostMetaCheckData {
+    repeated LProvisioner ProvisionerList = 1;
+    repeated LTenant TenantList = 2;
+    repeated LStorageClass StorageClassList = 3;
+    repeated LClusterMap ClusterMapList = 4;
+
+    LClusterPhysical ClusterPhysical = 5;
+    repeated LHostMsg HostMsgList = 6;
+
+    repeated LCluster ClusterLogic = 7;
+
+    repeated LMwCluster MiddlewareClusterList = 8;
+    repeated LMwContainer MiddlewareContainerList = 9;
+    repeated LMwVolume MiddlewareVolumeList = 10;
+
+    repeated LService ServiceList = 11;
+    repeated LServiceContainer ServiceContainerList = 12;
+    repeated LServiceVolume ServiceVolumeList = 13;
+
+    LClusterPhysical ClusterPhysicalTiDB = 14;
+    repeated LHostMsg HostMsgListTiDB = 15;
+
+    repeated LTidbCluster TiDBClusterList = 16;
+    repeated LTidbPods TiDBPodList = 17;
+}
