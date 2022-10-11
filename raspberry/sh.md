@@ -832,6 +832,27 @@ docker run -ti \
   --volume /home/docker/v/gitlab/data:/var/opt/gitlab:z \
   yrzr/gitlab-ce-arm64v8:14.1.3-ce.0
 
+
+
+
+docker run -ti \
+  --detach \
+  --restart always \
+  --name gitlab \
+  --privileged \
+  --publish 9922:22 \
+  --publish 9980:80 \
+  --publish 9443:443 \
+  --hostname git.anxpp.com \
+  --env GITLAB_OMNIBUS_CONFIG=" \
+    nginx['redirect_http_to_https'] = false; praefect['logging_level'] = 'error'; gitaly['logging_level'] = 'error'; "\
+  --env GITLAB_LOG_LEVEL=error \
+  -v /etc/localtime:/etc/localtime \
+  --volume /home/docker/v/gitlab/conf:/etc/gitlab:z \
+  --volume /home/docker/v/gitlab/logs:/var/log/gitlab:z \
+  --volume /home/docker/v/gitlab/data:/var/opt/gitlab:z \
+  yrzr/gitlab-ce-arm64v8:14.1.4-ce.0 && docker logs -f gitlab
+
 ```
 
 ```
