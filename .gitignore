@@ -90,3 +90,4 @@ fabric.properties
 # vendor/
 
 *.iml
+*.pdb
